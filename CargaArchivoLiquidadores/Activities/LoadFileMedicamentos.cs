@@ -43,13 +43,12 @@ namespace CargaArchivoLiquidadores.Activities
                             if (medicamentoID.AsList().Count == 0)
                             {
                                 var selectQueryBiomedico = $"SELECT TOP(1) ISNULL([CLBI_ID_CLASIFICACION], 0) FROM [dbo].[CLASIFICACION_BIOMEDICA] WHERE [CLBI_COD_CLASIFICACION]= @idClasificacion";
-                                var clasificacionID = connection.Query(selectQueryBiomedico, new
+                                var clasificacionID = connection.Query<Int32>(selectQueryBiomedico, new
                                 {
                                     idClasificacion = campos[2]
                                 });
 
-
-                                int idClass = clasificacionID.FirstOrDefault();
+                                int idClass = Convert.ToInt32(clasificacionID.FirstOrDefault());
 
                                 var result = connection.Execute(insertQuery, new
                                 {
