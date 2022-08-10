@@ -1,22 +1,29 @@
-﻿using Dapper;
+﻿using CargaArchivoLiquidadores.Interfaces;
+using Dapper;
+using Microsoft.Extensions.Configuration;
 using System;
-using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
-using System.Text;
 
 namespace CargaArchivoLiquidadores.Activities
 {
-    public class LoadFileSolicitud
+    public class LoadFileSolicitud : ILoadFileSolicitud
     {
-        public static bool LoadData(string conexion)
+        private readonly IConfiguration _configuration;
+
+        public LoadFileSolicitud(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
+
+        public bool LoadData()
         {
             string folder = $@"{Environment.CurrentDirectory}\INBOX";
 
             DirectoryInfo di = new DirectoryInfo(folder);
 
-            foreach (var fi in di.GetFiles(""))
+            foreach (var fi in di.GetFiles("LIQUIDACIONES*.txt"))
             {
                 using (var file = new StreamReader(fi.FullName))
                 {
@@ -24,8 +31,8 @@ namespace CargaArchivoLiquidadores.Activities
 
                     file.ReadLine();
 
-                    using (var connection = new SqlConnection(conexion))
-
+                    using (var connection = new SqlConnection(_configuration.GetConnectionString("DataConnection")))
+                    {
                         while ((row = file.ReadLine()) != null)
                         {
                             var campos = row.Split('|');
@@ -50,7 +57,7 @@ namespace CargaArchivoLiquidadores.Activities
                                        "@SLCD_OBS_SOLICITUD, @SLCD_PAG_CONTRATANTE, @SLCD_FEC_DIGITACION, @SLCD_FEC_PAGO_PROYECTADA, @SLCD_DES_PAGO, @SLCD_CANT_DOCUMENTOS, @SLCD_MTO_PRESTACION, @SLCD_MTO_DEDUCIBLE, " +
                                        "@SLCD_MTO_PAGO, @SLCD_FEC_CONTABLE, @SLCD_NUN_DENUNCIA, @SLCD_GLOSA_MEDICAMENTO, @SLCD_OBSERVACION_2)";
 
-                                
+
                                 var selectQuery = $"SELECT * FROM SOLICITUD WHERE SLCD_CORRELATIVO_INTERNO = @numSolicitud AND PRVD_ID_PROVEEDOR = 2";
                                 var medicamentoID = connection.Query(selectQuery, new
                                 {
@@ -66,7 +73,7 @@ namespace CargaArchivoLiquidadores.Activities
                                     {
                                         poliza = campos[0]
                                     });
-                                    
+
                                     //Cobertura
 
                                     var selectTipoCobertura = @"SELECT TOP(1) ISNULL([TPCB_ID_COBERTURA], 0) FROM [dbo].[TIPO_COBERTURA] WHERE [TPCB_DES_COBERTURA]= @tipoCobertura ";
@@ -114,12 +121,14 @@ namespace CargaArchivoLiquidadores.Activities
                                     });
                                 }
                             }
-                            catch (Exception ex)
+                            catch (Exception)
                             {
                                 throw;
                             }
 
                         }
+                    }
+
                 }
             }
 
