@@ -84,7 +84,7 @@ namespace CargaArchivoLiquidadores.Activities
                     parameters.Add("DP_FEC_TERMINO_VIG", fields[12], DbType.String);
                     parameters.Add("DP_PLAN_PERSONAL", fields[13], DbType.String);
                     parameters.Add("DP_CODIGO_GRUPO", Convert.ToInt32(fields[14]), DbType.Int32);
-                    connection.Execute(query, commandType: CommandType.StoredProcedure, param: parameters);
+                    connection.Execute(query, commandType: CommandType.Text, param: parameters);
                 }
                 return true;
             }

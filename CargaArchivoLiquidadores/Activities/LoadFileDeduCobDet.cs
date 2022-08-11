@@ -78,7 +78,7 @@ namespace CargaArchivoLiquidadores.Activities
                     parameters.Add("DCD_TIPO_COB", "NO_FARMACIA", DbType.String);
                     parameters.Add("DCD_FEC_MODIFICACION", DBNull.Value, DbType.String);
                     parameters.Add("DCD_FEC_CREACION", Convert.ToDateTime(fields[6]), DbType.DateTime);
-                    connection.Execute(query, commandType: CommandType.StoredProcedure, param: parameters);
+                    connection.Execute(query, commandType: CommandType.Text, param: parameters);
                 }
                 return true;
             }
