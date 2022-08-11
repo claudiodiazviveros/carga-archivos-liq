@@ -78,7 +78,8 @@ namespace CargaArchivoLiquidadores
                 .AddScoped<ILoadFileClasificacionBiomedica, LoadFileClasificacionBiomedica>()
                 .AddScoped<ILoadFileMedicamentos, LoadFileMedicamentos>()
                 .AddScoped<ILoadFileSolicitud, LoadFileSolicitud>()
-                .AddScoped<IBlobManager, BlobManager>();
+                .AddScoped<ILoadFileDeduPlan, LoadFileDeduPlan>()
+                .AddScoped<IBlobManager, BlobManager>();            
         }
     }
 }
