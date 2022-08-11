@@ -10,18 +10,21 @@ namespace CargaArchivoLiquidadores
         private readonly ILoadFileMedicamentos _loadFileMedicamentos;
         private readonly ILoadFileSolicitud _loadFileSolicitud;
         private readonly ILoadFileDeduPlan _loadFileDeduPlan;
+        private readonly ILoadFileDeduCobDet _loadFileDeduCobDet;
         private readonly IBlobManager _blobManager;
 
         public App(ILoadFileClasificacionBiomedica loadFileClasificacionBiomedica,
             ILoadFileMedicamentos loadFileMedicamentos,
             ILoadFileSolicitud loadFileSolicitud,
             ILoadFileDeduPlan loadFileDeduPlan,
+            ILoadFileDeduCobDet loadFileDeduCobDet,
             IBlobManager blobManager)
         {
             _loadFileClasificacionBiomedica = loadFileClasificacionBiomedica;
             _loadFileMedicamentos = loadFileMedicamentos;
             _loadFileSolicitud = loadFileSolicitud;
             _loadFileDeduPlan = loadFileDeduPlan;
+            _loadFileDeduCobDet = loadFileDeduCobDet;
             _blobManager = blobManager;
         }
 
@@ -41,6 +44,8 @@ namespace CargaArchivoLiquidadores
             //?. load file 'Deducible Plan'
             _loadFileDeduPlan.LoadData();
 
+            //?. load file 'Deducible Cobertura Detalle'
+            _loadFileDeduCobDet.LoadData();
 
 
 
