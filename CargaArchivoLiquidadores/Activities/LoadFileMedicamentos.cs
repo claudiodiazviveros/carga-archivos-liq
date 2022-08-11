@@ -57,18 +57,7 @@ namespace CargaArchivoLiquidadores.Activities
 
                                     int idClass = Convert.ToInt32(clasificacionID.FirstOrDefault());
 
-                                    var result = connection.Execute(insertQuery, new
-                                    {
-                                        CLBI_ID_CLASIFICACION = idClass,
-                                        MDTO_COD_MEDICAMENTO = campos[0],
-                                        MDTO_DES_MEDICAMENTO = campos[1],
-                                        MDTO_USU_ULT_ACT = "BATCH",
-                                        MDTO_USU_CREACION = "BATCH",
-                                        MDTO_FEC_ULT_ACT = DateTime.Now,
-                                        MDTO_FEC_CREACION = campos[3],
-                                        MDTO_ES_VIGENTE = true,
-                                        MDTO_ORIGEN_DATO = "P"
-                                    });
+                                    AddRecord(connection, idClass, campos);
                                 }
                             }
                             catch (Exception)
@@ -83,6 +72,24 @@ namespace CargaArchivoLiquidadores.Activities
             }
 
             return true;
+        }
+
+        private static void AddRecord(SqlConnection connection, int idClass, string[] campos)
+        {
+            string insertQuery = @"INSERT INTO [dbo].[MEDICAMENTO]([CLBI_ID_CLASIFICACION],[MDTO_COD_MEDICAMENTO],[MDTO_DES_MEDICAMENTO],[MDTO_USU_ULT_ACT],[MDTO_USU_CREACION],[MDTO_FEC_ULT_ACT],[MDTO_FEC_CREACION] ,[MDTO_ES_VIGENTE],[MDTO_ORIGEN_DATO]) VALUES (@CLBI_ID_CLASIFICACION, @MDTO_COD_MEDICAMENTO, @MDTO_DES_MEDICAMENTO, @MDTO_USU_ULT_ACT, @MDTO_USU_CREACION, @MDTO_FEC_ULT_ACT, @MDTO_FEC_CREACION , @MDTO_ES_VIGENTE, @MDTO_ORIGEN_DATO)";
+
+            connection.Execute(insertQuery, new
+            {
+                CLBI_ID_CLASIFICACION = idClass,
+                MDTO_COD_MEDICAMENTO = campos[0],
+                MDTO_DES_MEDICAMENTO = campos[1],
+                MDTO_USU_ULT_ACT = "BATCH",
+                MDTO_USU_CREACION = "BATCH",
+                MDTO_FEC_ULT_ACT = DateTime.Now,
+                MDTO_FEC_CREACION = campos[3],
+                MDTO_ES_VIGENTE = true,
+                MDTO_ORIGEN_DATO = "P"
+            });
         }
     }
 }
