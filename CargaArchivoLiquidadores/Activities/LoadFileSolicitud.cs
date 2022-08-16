@@ -1,6 +1,7 @@
 ﻿using CargaArchivoLiquidadores.Interfaces;
 using Dapper;
 using Microsoft.Extensions.Configuration;
+using Serilog;
 using System;
 using System.Data.SqlClient;
 using System.IO;
@@ -68,7 +69,7 @@ namespace CargaArchivoLiquidadores.Activities
             return true;
         }
 
-        private static int GetIdPoliza(SqlConnection connection, string[] campos)
+        private int GetIdPoliza(SqlConnection connection, string[] campos)
         {
             var selectQueryPoliza = $"SELECT TOP(1) ISNULL([PLZA_ID_POLIZA], 0) FROM [dbo].[POLIZA] WHERE [PLZA_COD_POLIZA]= @poliza ORDER BY PLZA_ID_POLIZA DESC";
             var polizaID = connection.Query<Int32>(selectQueryPoliza, new
@@ -80,7 +81,7 @@ namespace CargaArchivoLiquidadores.Activities
             return idPol;
         }
 
-        private static int GetIdCobertura(SqlConnection connection, string[] campos)
+        private int GetIdCobertura(SqlConnection connection, string[] campos)
         {
             var selectTipoCobertura = @"SELECT TOP(1) ISNULL([TPCB_ID_COBERTURA], 0) FROM [dbo].[TIPO_COBERTURA] WHERE [TPCB_DES_COBERTURA]= @tipoCobertura ";
             var coberturaID = connection.Query<Int32>(selectTipoCobertura, new
@@ -91,7 +92,7 @@ namespace CargaArchivoLiquidadores.Activities
             return idCobt;
         }
 
-        private static int GetFormaPago(SqlConnection connection, string[] campos)
+        private int GetFormaPago(SqlConnection connection, string[] campos)
         {
             var selectFormPago = @"SELECT TOP(1) FMPR_COD_FORMA_PAGO FROM dbo.FORMA_PAGO_REEMBOLSO WHERE FMPR_COD_FORMA_PAGO = @formaPagoRembolso";
             var formPagoID = connection.Query<Int32>(selectFormPago, new
@@ -127,7 +128,7 @@ namespace CargaArchivoLiquidadores.Activities
             return idFormaPago;
         }
 
-        private static void AddSolicitud(SqlConnection connection, string[] campos, int idPol, int idCobt, int idFormaPago)
+        private bool AddSolicitud(SqlConnection connection, string[] campos, int idPol, int idCobt, int idFormaPago)
         {
             string insertQuery = @"INSERT INTO [dbo].[SOLICITUD]([SLCD_ID_SOLICITUD], [PLZA_ID_POLIZA], " +
                 "[SLCD_COD_POLIZA], [RMSA_ID_REMESA], [ISAP_ID_ISAPRE], [PERS_RUT_CONTRATANTE], [PERS_RUT_TITULAR], [PERS_RUT_PACIENTE], [TPCG_ID_TIP_CARGA], " +
@@ -147,16 +148,25 @@ namespace CargaArchivoLiquidadores.Activities
                 "@SLCD_OBS_SOLICITUD, @SLCD_PAG_CONTRATANTE, @SLCD_FEC_DIGITACION, @SLCD_FEC_PAGO_PROYECTADA, @SLCD_DES_PAGO, @SLCD_CANT_DOCUMENTOS, @SLCD_MTO_PRESTACION, @SLCD_MTO_DEDUCIBLE, " +
                 "@SLCD_MTO_PAGO, @SLCD_FEC_CONTABLE, @SLCD_NUN_DENUNCIA, @SLCD_GLOSA_MEDICAMENTO, @SLCD_OBSERVACION_2)";
 
-            connection.Execute(insertQuery, new
+            try
             {
-                PLZA_ID_POLIZA = idPol,
-                PLZA_COD_POLIZA = campos[0],
-                TPCB_ID_COBERTURA = idCobt,
-                FMPR_ID_FORMA_PAGO = idFormaPago,
-                PERS_RUT_CONTRATANTE = campos[3],
-                PERS_RUT_CORREDOR = campos[6],
-                SLCD_OBSERVACION_2 = campos[86]
-            });
+                connection.Execute(insertQuery, new
+                {
+                    PLZA_ID_POLIZA = idPol,
+                    PLZA_COD_POLIZA = campos[0],
+                    TPCB_ID_COBERTURA = idCobt,
+                    FMPR_ID_FORMA_PAGO = idFormaPago,
+                    PERS_RUT_CONTRATANTE = campos[3],
+                    PERS_RUT_CORREDOR = campos[6],
+                    SLCD_OBSERVACION_2 = campos[86]
+                });
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Fila [{campos}] {ex.Message}");
+            }
+            return false;
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using CargaArchivoLiquidadores.Interfaces;
 using Dapper;
 using Microsoft.Extensions.Configuration;
+using Serilog;
 using System;
 using System.Data.SqlClient;
 using System.IO;
@@ -38,8 +39,6 @@ namespace CargaArchivoLiquidadores.Activities
 
                             try
                             {
-                                string insertQuery = @"INSERT INTO [dbo].[MEDICAMENTO]([CLBI_ID_CLASIFICACION],[MDTO_COD_MEDICAMENTO],[MDTO_DES_MEDICAMENTO],[MDTO_USU_ULT_ACT],[MDTO_USU_CREACION],[MDTO_FEC_ULT_ACT],[MDTO_FEC_CREACION] ,[MDTO_ES_VIGENTE],[MDTO_ORIGEN_DATO]) VALUES (@CLBI_ID_CLASIFICACION, @MDTO_COD_MEDICAMENTO, @MDTO_DES_MEDICAMENTO, @MDTO_USU_ULT_ACT, @MDTO_USU_CREACION, @MDTO_FEC_ULT_ACT, @MDTO_FEC_CREACION , @MDTO_ES_VIGENTE, @MDTO_ORIGEN_DATO)";
-
                                 var selectQuery = $"SELECT ISNULL([CLBI_ID_CLASIFICACION], 0) FROM [dbo].[MEDICAMENTO] WHERE MDTO_COD_MEDICAMENTO = @codMedicamento";
                                 var medicamentoID = connection.Query(selectQuery, new
                                 {
@@ -60,9 +59,9 @@ namespace CargaArchivoLiquidadores.Activities
                                     AddRecord(connection, idClass, campos);
                                 }
                             }
-                            catch (Exception)
+                            catch (Exception ex)
                             {
-                                throw;
+                                Log.Error($"Fila [{row}] {ex.Message}");
                             }
 
                         }
@@ -74,22 +73,31 @@ namespace CargaArchivoLiquidadores.Activities
             return true;
         }
 
-        private static void AddRecord(SqlConnection connection, int idClass, string[] campos)
+        private bool AddRecord(SqlConnection connection, int idClass, string[] campos)
         {
             string insertQuery = @"INSERT INTO [dbo].[MEDICAMENTO]([CLBI_ID_CLASIFICACION],[MDTO_COD_MEDICAMENTO],[MDTO_DES_MEDICAMENTO],[MDTO_USU_ULT_ACT],[MDTO_USU_CREACION],[MDTO_FEC_ULT_ACT],[MDTO_FEC_CREACION] ,[MDTO_ES_VIGENTE],[MDTO_ORIGEN_DATO]) VALUES (@CLBI_ID_CLASIFICACION, @MDTO_COD_MEDICAMENTO, @MDTO_DES_MEDICAMENTO, @MDTO_USU_ULT_ACT, @MDTO_USU_CREACION, @MDTO_FEC_ULT_ACT, @MDTO_FEC_CREACION , @MDTO_ES_VIGENTE, @MDTO_ORIGEN_DATO)";
 
-            connection.Execute(insertQuery, new
+            try
             {
-                CLBI_ID_CLASIFICACION = idClass,
-                MDTO_COD_MEDICAMENTO = campos[0],
-                MDTO_DES_MEDICAMENTO = campos[1],
-                MDTO_USU_ULT_ACT = "BATCH",
-                MDTO_USU_CREACION = "BATCH",
-                MDTO_FEC_ULT_ACT = DateTime.Now,
-                MDTO_FEC_CREACION = campos[3],
-                MDTO_ES_VIGENTE = true,
-                MDTO_ORIGEN_DATO = "P"
-            });
+                connection.Execute(insertQuery, new
+                {
+                    CLBI_ID_CLASIFICACION = idClass,
+                    MDTO_COD_MEDICAMENTO = campos[0],
+                    MDTO_DES_MEDICAMENTO = campos[1],
+                    MDTO_USU_ULT_ACT = "BATCH",
+                    MDTO_USU_CREACION = "BATCH",
+                    MDTO_FEC_ULT_ACT = DateTime.Now,
+                    MDTO_FEC_CREACION = campos[3],
+                    MDTO_ES_VIGENTE = true,
+                    MDTO_ORIGEN_DATO = "P"
+                });
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Fila [{campos}] {ex.Message}");
+            }
+            return false;
         }
     }
 }
