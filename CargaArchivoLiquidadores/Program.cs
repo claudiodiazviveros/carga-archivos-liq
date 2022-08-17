@@ -6,7 +6,6 @@ using System;
 using System.IO;
 using System.Threading.Tasks;
 using CargaArchivoLiquidadores.Interfaces;
-using CargaArchivoLiquidadores.Services;
 using CargaArchivoLiquidadores.Activities;
 
 namespace CargaArchivoLiquidadores
@@ -80,8 +79,7 @@ namespace CargaArchivoLiquidadores
                 .AddScoped<ILoadFileSolicitud, LoadFileSolicitud>()
                 .AddScoped<ILoadFileDeduPlan, LoadFileDeduPlan>()
                 .AddScoped<ILoadFileDeduCobDet, LoadFileDeduCobDet>()
-                .AddScoped<ILoadFileDeduFamiliar, LoadFileDeduFamiliar>()
-                .AddScoped<IBlobManager, BlobManager>();
+                .AddScoped<ILoadFileDeduFamiliar, LoadFileDeduFamiliar>();
         }
     }
 }

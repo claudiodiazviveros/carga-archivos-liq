@@ -3,5 +3,6 @@
     public interface ILoadFileDeduPlan
     {
         bool LoadData();
+        void SaveScript();
     }
 }

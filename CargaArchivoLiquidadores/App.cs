@@ -1,5 +1,5 @@
-﻿using Serilog;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using Serilog;
 using CargaArchivoLiquidadores.Interfaces;
 
 namespace CargaArchivoLiquidadores
@@ -12,15 +12,13 @@ namespace CargaArchivoLiquidadores
         private readonly ILoadFileDeduPlan _loadFileDeduPlan;
         private readonly ILoadFileDeduCobDet _loadFileDeduCobDet;
         private readonly ILoadFileDeduFamiliar _loadFileDeduFamiliar;
-        private readonly IBlobManager _blobManager;
 
         public App(ILoadFileClasificacionBiomedica loadFileClasificacionBiomedica,
             ILoadFileMedicamentos loadFileMedicamentos,
             ILoadFileSolicitud loadFileSolicitud,
             ILoadFileDeduPlan loadFileDeduPlan,
             ILoadFileDeduCobDet loadFileDeduCobDet,
-            ILoadFileDeduFamiliar loadFileDeduFamiliar,
-            IBlobManager blobManager)
+            ILoadFileDeduFamiliar loadFileDeduFamiliar)
         {
             _loadFileClasificacionBiomedica = loadFileClasificacionBiomedica;
             _loadFileMedicamentos = loadFileMedicamentos;
@@ -28,7 +26,6 @@ namespace CargaArchivoLiquidadores
             _loadFileDeduPlan = loadFileDeduPlan;
             _loadFileDeduCobDet = loadFileDeduCobDet;
             _loadFileDeduFamiliar = loadFileDeduFamiliar;
-            _blobManager = blobManager;
         }
 
         public Task Run()
@@ -45,17 +42,13 @@ namespace CargaArchivoLiquidadores
             _loadFileSolicitud.LoadData();
 
             //?. load file 'Deducible Plan'
-            _loadFileDeduPlan.LoadData();
+            _loadFileDeduPlan.SaveScript();
 
             //?. load file 'Deducible Cobertura Detalle'
             _loadFileDeduCobDet.LoadData();
 
             //?. load file 'Deducible Familiar'
             _loadFileDeduFamiliar.LoadData();
-
-
-            var manager = _blobManager.GetBlobs("");
-
 
             return Task.CompletedTask;  
         }
