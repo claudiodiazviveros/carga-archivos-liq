@@ -39,7 +39,7 @@ namespace CargaArchivoLiquidadores
             _loadFileMedicamentos.LoadData();
 
             //3. load file 'Solicitud'
-            _loadFileSolicitud.LoadData();
+            _loadFileSolicitud.SaveScript();
 
             //?. load file 'Deducible Plan'
             _loadFileDeduPlan.SaveScript();

@@ -2,6 +2,7 @@
 {
     public interface ILoadFileSolicitud
     {
-        bool LoadData();
+        //bool LoadData();
+        void SaveScript();
     }
 }

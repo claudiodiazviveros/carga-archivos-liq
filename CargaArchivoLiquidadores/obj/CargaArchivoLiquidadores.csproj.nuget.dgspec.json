@@ -1,24 +1,27 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Workspace\\repos\\carga-archivos-liq\\CargaArchivoLiquidadores\\CargaArchivoLiquidadores.csproj": {}
+    "H:\\rTilleria\\carga-archivos-liq\\CargaArchivoLiquidadores\\CargaArchivoLiquidadores.csproj": {}
   },
   "projects": {
-    "C:\\Workspace\\repos\\carga-archivos-liq\\CargaArchivoLiquidadores\\CargaArchivoLiquidadores.csproj": {
+    "H:\\rTilleria\\carga-archivos-liq\\CargaArchivoLiquidadores\\CargaArchivoLiquidadores.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Workspace\\repos\\carga-archivos-liq\\CargaArchivoLiquidadores\\CargaArchivoLiquidadores.csproj",
+        "projectUniqueName": "H:\\rTilleria\\carga-archivos-liq\\CargaArchivoLiquidadores\\CargaArchivoLiquidadores.csproj",
         "projectName": "CargaArchivoLiquidadores",
-        "projectPath": "C:\\Workspace\\repos\\carga-archivos-liq\\CargaArchivoLiquidadores\\CargaArchivoLiquidadores.csproj",
-        "packagesPath": "C:\\Users\\Claudio Diaz Viveros\\.nuget\\packages\\",
-        "outputPath": "C:\\Workspace\\repos\\carga-archivos-liq\\CargaArchivoLiquidadores\\obj\\",
+        "projectPath": "H:\\rTilleria\\carga-archivos-liq\\CargaArchivoLiquidadores\\CargaArchivoLiquidadores.csproj",
+        "packagesPath": "C:\\Users\\INDRTilleria\\.nuget\\packages\\",
+        "outputPath": "H:\\rTilleria\\carga-archivos-liq\\CargaArchivoLiquidadores\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
-          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
+          "C:\\Program Files (x86)\\Microsoft\\Xamarin\\NuGet\\"
         ],
         "configFilePaths": [
-          "C:\\Users\\Claudio Diaz Viveros\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "C:\\Users\\INDRTilleria\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
         ],
         "originalTargetFrameworks": [
           "netcoreapp3.1"
@@ -111,7 +114,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.302\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.408\\RuntimeIdentifierGraph.json"
         }
       }
     }
