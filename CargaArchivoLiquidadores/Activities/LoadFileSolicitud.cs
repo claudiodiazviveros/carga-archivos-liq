@@ -170,6 +170,12 @@ namespace CargaArchivoLiquidadores.Activities
                     int idCobt = _loadMaestroSolicitud.GetIdCobertura(currentRow, campos);
                     int idFormaPago = _loadMaestroSolicitud.GetFormaPago(currentRow, campos);
                     int idTipoCarga = _loadMaestroSolicitud.GetTipoCarga(currentRow, campos);
+                    int idLiquidador = _loadMaestroSolicitud.GetLiquidador(currentRow, campos);
+                    int idProveedor = _loadMaestroSolicitud.GetProveedor(currentRow, campos);
+                    int idSucursal = _loadMaestroSolicitud.GetSucursal(currentRow, campos);
+                    int idBanco = _loadMaestroSolicitud.GetBanco(currentRow, campos);
+                    int idTipoAdmin = _loadMaestroSolicitud.GetTipoAdministracion(currentRow, campos);
+
 
                     //if validar si el ID es 0, no haga el insert
                     string insertQuery = @"INSERT INTO [dbo].[SOLICITUD]([PLZA_ID_POLIZA], " +
@@ -182,13 +188,13 @@ namespace CargaArchivoLiquidadores.Activities
                         "[SLCD_MTO_PAGO], [SLCD_FEC_CONTABLE], [SLCD_NUN_DENUNCIA], [SLCD_GLOSA_MEDICAMENTO], [SLCD_OBSERVACION_2])";
 
                     string defaultValues = $"VALUES('{idPol}', " +
-                        $"'{campos[0]}', @RMSA_ID_REMESA, {campos[73]}, {campos[3]}, " + campos[14] + ", " + campos[19] + ", " + idTipoCarga + ", " +
-                        "@LIQU_ID_LIQUIDADOR, @PRVD_ID_PROVEEDOR, @SCSL_ID_SUCURSAL, @SLCD_NUM_SOLICITUD, @SLCD_CORRELATIVO_INTERNO, @SLCD_FEC_PRESENTACION, " +
-                        "@SLCD_FEC_PAGO, " + idFormaPago + ", @BNCO_ID_BANCO, @TPAD_ID_TIP_ADMINISTRACION, " + idCobt + ", @PERS_RUT_CORREDOR, @ESDS_ID_ESTADO, " +
-                        "@GRIN_ID_GRUPO_ING_INFORMADO, @POIN_ID_POOL_INFORMADO, @SLCD_FECHA_ESTADO, @SLCD_CTA_CORRIENTE, @SLCD_NUM_EGRESO, @SLCD_RECEP_CHEQUE, @SLCD_SDO_DISPONIBLE_UF, " +
-                        "@SLCD_FEC_OCURRENCIA, @SLCD_FEC_CREACION, @SLCD_FEC_ULT_ACT, @SLCD_USU_CREACION, @SLCD_USU_ULT_ACT, @SLCD_ES_VIGENTE, @NPLI_ID_PLAN_INFORMADO, " +
-                        "@SLCD_OBS_SOLICITUD, @SLCD_PAG_CONTRATANTE, @SLCD_FEC_DIGITACION, @SLCD_FEC_PAGO_PROYECTADA, @SLCD_DES_PAGO, @SLCD_CANT_DOCUMENTOS, @SLCD_MTO_PRESTACION, @SLCD_MTO_DEDUCIBLE, " +
-                        "@SLCD_MTO_PAGO, @SLCD_FEC_CONTABLE, @SLCD_NUN_DENUNCIA, @SLCD_GLOSA_MEDICAMENTO, @SLCD_OBSERVACION_2)";
+                        $"'{campos[0]}', '@RMSA_ID_REMESA', '{campos[73]}', '{campos[3]}', '{campos[14]}', '{campos[19]}', '{idTipoCarga}', " +
+                        $" '{idLiquidador}', '{idProveedor}', '{idSucursal}', '{campos[28]}', '{campos[58]}', '{campos[38]}', " +
+                        $" '{campos[70]}', '{idFormaPago}, '{idBanco}', '{idTipoAdmin}', '{idCobt}', '{campos[6]}', @ESDS_ID_ESTADO, " +
+                        $" @GRIN_ID_GRUPO_ING_INFORMADO, @POIN_ID_POOL_INFORMADO, @SLCD_FECHA_ESTADO, @SLCD_CTA_CORRIENTE, @SLCD_NUM_EGRESO, @SLCD_RECEP_CHEQUE, @SLCD_SDO_DISPONIBLE_UF, " +
+                        $" @SLCD_FEC_OCURRENCIA, @SLCD_FEC_CREACION, @SLCD_FEC_ULT_ACT, @SLCD_USU_CREACION, @SLCD_USU_ULT_ACT, @SLCD_ES_VIGENTE, @NPLI_ID_PLAN_INFORMADO, " +
+                        $" @SLCD_OBS_SOLICITUD, @SLCD_PAG_CONTRATANTE, @SLCD_FEC_DIGITACION, @SLCD_FEC_PAGO_PROYECTADA, @SLCD_DES_PAGO, @SLCD_CANT_DOCUMENTOS, @SLCD_MTO_PRESTACION, @SLCD_MTO_DEDUCIBLE, " +
+                        $" @SLCD_MTO_PAGO, @SLCD_FEC_CONTABLE, @SLCD_NUN_DENUNCIA, @SLCD_GLOSA_MEDICAMENTO, @SLCD_OBSERVACION_2)";
 
                     return insertQuery + defaultValues;
 
