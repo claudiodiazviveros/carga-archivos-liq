@@ -166,7 +166,7 @@ namespace CargaArchivoLiquidadores.Activities
 
                 if (medicamentoID.AsList().Count == 0)
                 {
-                    int idPol = _loadMaestroSolicitud.GetIdPoliza(currentRow, campos);
+                    int idPoliza = _loadMaestroSolicitud.GetIdPoliza(currentRow, campos);
                     int idCobt = _loadMaestroSolicitud.GetIdCobertura(currentRow, campos);
                     int idFormaPago = _loadMaestroSolicitud.GetFormaPago(currentRow, campos);
                     int idTipoCarga = _loadMaestroSolicitud.GetTipoCarga(currentRow, campos);
@@ -175,9 +175,16 @@ namespace CargaArchivoLiquidadores.Activities
                     int idSucursal = _loadMaestroSolicitud.GetSucursal(currentRow, campos);
                     int idBanco = _loadMaestroSolicitud.GetBanco(currentRow, campos);
                     int idTipoAdmin = _loadMaestroSolicitud.GetTipoAdministracion(currentRow, campos);
+                    int idEstadoSolicitudReembolso = _loadMaestroSolicitud.GetEstadoSolicitudReembolso(currentRow, campos);
+                    int idGrupoIngInformado = _loadMaestroSolicitud.GetGrupoIngInformado(currentRow, campos);
+                    int idPool = _loadMaestroSolicitud.GetPoolInformado(currentRow, campos);
+                    int idPlanInformado = _loadMaestroSolicitud.GetNombrePlanInformado(currentRow, campos);
+                    int idRemesa = _loadMaestroSolicitud.GetRemesa(currentRow, campos);
+                    int vigencia = 1;
 
 
                     //if validar si el ID es 0, no haga el insert
+
                     string insertQuery = @"INSERT INTO [dbo].[SOLICITUD]([PLZA_ID_POLIZA], " +
                         "[SLCD_COD_POLIZA], [RMSA_ID_REMESA], [ISAP_ID_ISAPRE], [PERS_RUT_CONTRATANTE], [PERS_RUT_TITULAR], [PERS_RUT_PACIENTE], [TPCG_ID_TIP_CARGA], " +
                         " [LIQU_ID_LIQUIDADOR], [PRVD_ID_PROVEEDOR], [SCSL_ID_SUCURSAL], [SLCD_NUM_SOLICITUD], [SLCD_CORRELATIVO_INTERNO], [SLCD_FEC_PRESENTACION], " +
@@ -187,14 +194,14 @@ namespace CargaArchivoLiquidadores.Activities
                         "[SLCD_OBS_SOLICITUD], [SLCD_PAG_CONTRATANTE], [SLCD_FEC_DIGITACION], [SLCD_FEC_PAGO_PROYECTADA], [SLCD_DES_PAGO], [SLCD_CANT_DOCUMENTOS], [SLCD_MTO_PRESTACION], [SLCD_MTO_DEDUCIBLE], " +
                         "[SLCD_MTO_PAGO], [SLCD_FEC_CONTABLE], [SLCD_NUN_DENUNCIA], [SLCD_GLOSA_MEDICAMENTO], [SLCD_OBSERVACION_2])";
 
-                    string defaultValues = $"VALUES('{idPol}', " +
-                        $"'{campos[0]}', '@RMSA_ID_REMESA', '{campos[73]}', '{campos[3]}', '{campos[14]}', '{campos[19]}', '{idTipoCarga}', " +
+                    string defaultValues = $"VALUES('{idPoliza}', " +
+                        $"'{campos[0]}', '{idRemesa}', '{campos[73]}', '{campos[3]}', '{campos[14]}', '{campos[19]}', '{idTipoCarga}', " +
                         $" '{idLiquidador}', '{idProveedor}', '{idSucursal}', '{campos[28]}', '{campos[58]}', '{campos[38]}', " +
-                        $" '{campos[70]}', '{idFormaPago}, '{idBanco}', '{idTipoAdmin}', '{idCobt}', '{campos[6]}', @ESDS_ID_ESTADO, " +
-                        $" @GRIN_ID_GRUPO_ING_INFORMADO, @POIN_ID_POOL_INFORMADO, @SLCD_FECHA_ESTADO, @SLCD_CTA_CORRIENTE, @SLCD_NUM_EGRESO, @SLCD_RECEP_CHEQUE, @SLCD_SDO_DISPONIBLE_UF, " +
-                        $" @SLCD_FEC_OCURRENCIA, @SLCD_FEC_CREACION, @SLCD_FEC_ULT_ACT, @SLCD_USU_CREACION, @SLCD_USU_ULT_ACT, @SLCD_ES_VIGENTE, @NPLI_ID_PLAN_INFORMADO, " +
-                        $" @SLCD_OBS_SOLICITUD, @SLCD_PAG_CONTRATANTE, @SLCD_FEC_DIGITACION, @SLCD_FEC_PAGO_PROYECTADA, @SLCD_DES_PAGO, @SLCD_CANT_DOCUMENTOS, @SLCD_MTO_PRESTACION, @SLCD_MTO_DEDUCIBLE, " +
-                        $" @SLCD_MTO_PAGO, @SLCD_FEC_CONTABLE, @SLCD_NUN_DENUNCIA, @SLCD_GLOSA_MEDICAMENTO, @SLCD_OBSERVACION_2)";
+                        $" '{campos[70]}', '{idFormaPago}, '{idBanco}', '{idTipoAdmin}', '{idCobt}', '{campos[6]}', '{idEstadoSolicitudReembolso}', " +
+                        $" '{idGrupoIngInformado}', '{idPool}', '{campos[57]}', '{campos[68]}', '{campos[71]}', '{campos[69]}', '{campos[91]}', " +
+                        $" '{campos[67]}', '{DateTime.Now}', '{DateTime.Now}', 'BATCH', 'BATCH', '{vigencia}', '{idPlanInformado}', " +
+                        $" '{campos[97]}', '{campos[98]}', '{campos[99]}', '{campos[100]}', '{campos[101]}', '{campos[108]}', '{campos[45]}', '{campos[51]}', " +
+                        $" '{campos[53]}', '{campos[75]}', '{campos[111]}', '{campos[109]}', '{campos[86]}')";
 
                     return insertQuery + defaultValues;
 
