@@ -19,6 +19,7 @@ namespace CargaArchivoLiquidadores.Activities
             _sqlConnection = new SqlConnection(_configuration.GetConnectionString("DataConnection"));
         }
 
+        #region Solicitud
         public int GetIdCobertura(int currentRow, string[] campos)
         {
             var selectTipoCobertura = @"SELECT TOP(1) ISNULL([TPCB_ID_COBERTURA], 0) FROM [dbo].[TIPO_COBERTURA] WHERE [TPCB_DES_COBERTURA]= @tipoCobertura ";
@@ -176,7 +177,7 @@ namespace CargaArchivoLiquidadores.Activities
                 banco = campos[66].Trim()
             });
 
-            if (resultID.FirstOrDefault() == 0)
+            if (resultID == null)
             {
                 Log.Information($"Falta el Banco {campos[66]} - {campos[67]}: en la línea  {currentRow}, se debe agregar en la tabla maestra");
                 return 0;
@@ -298,5 +299,26 @@ namespace CargaArchivoLiquidadores.Activities
             int primaryKey = Convert.ToInt32(resultID.FirstOrDefault());
             return primaryKey;
         }
+
+        public int GetIsapre(int currentRow, string[] campos)
+        {
+            var query = $"SELECT TOP(1) ISAP_ID_ISAPRE FROM dbo.ISAPRE WHERE ISAP_COD_ISAPRE = @isapre ";
+            var resultID = _sqlConnection.Query<Int32>(query, new
+            {
+                isapre = campos[73]
+            });
+
+            if (resultID.FirstOrDefault().ToString() == "")
+            {
+                Log.Information($"Falta la Isapre {campos[73]}: en la línea {currentRow}, se debe agregar en la tabla maestra");
+                return 0;
+            }
+
+            int primaryKey = Convert.ToInt32(resultID.FirstOrDefault());
+            return primaryKey;
+        }
+        #endregion
+
+
     }
 }

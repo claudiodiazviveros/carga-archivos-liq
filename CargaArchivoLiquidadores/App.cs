@@ -9,6 +9,7 @@ namespace CargaArchivoLiquidadores
         private readonly ILoadFileClasificacionBiomedica _loadFileClasificacionBiomedica;
         private readonly ILoadFileMedicamentos _loadFileMedicamentos;
         private readonly ILoadFileSolicitud _loadFileSolicitud;
+        private readonly ILoadFileDetalleSolicitud _loadFileDetalleSolicitud;
         private readonly ILoadFileDeduPlan _loadFileDeduPlan;
         private readonly ILoadFileDeduCobDet _loadFileDeduCobDet;
         private readonly ILoadFileDeduFamiliar _loadFileDeduFamiliar;
@@ -18,7 +19,8 @@ namespace CargaArchivoLiquidadores
             ILoadFileSolicitud loadFileSolicitud,
             ILoadFileDeduPlan loadFileDeduPlan,
             ILoadFileDeduCobDet loadFileDeduCobDet,
-            ILoadFileDeduFamiliar loadFileDeduFamiliar)
+            ILoadFileDeduFamiliar loadFileDeduFamiliar,
+            ILoadFileDetalleSolicitud loadFileDetalleSolicitud)
         {
             _loadFileClasificacionBiomedica = loadFileClasificacionBiomedica;
             _loadFileMedicamentos = loadFileMedicamentos;
@@ -26,6 +28,7 @@ namespace CargaArchivoLiquidadores
             _loadFileDeduPlan = loadFileDeduPlan;
             _loadFileDeduCobDet = loadFileDeduCobDet;
             _loadFileDeduFamiliar = loadFileDeduFamiliar;
+            _loadFileDetalleSolicitud = loadFileDetalleSolicitud;
         }
 
         public Task Run()
@@ -33,13 +36,16 @@ namespace CargaArchivoLiquidadores
             Log.Information("Inicia servicio");
 
             //1. load file 'Clasificacion Biomedica'
-            _loadFileClasificacionBiomedica.LoadData();
+            _loadFileClasificacionBiomedica.SaveScript();
 
             //2. load file 'Medicamentos'
-            _loadFileMedicamentos.LoadData();
+            _loadFileMedicamentos.SaveScript();
 
             //3. load file 'Solicitud'
             _loadFileSolicitud.SaveScript();
+
+            //4. load file 'Detalle Solicitud'
+            _loadFileDetalleSolicitud.SaveScript();
 
             //?. load file 'Deducible Plan'
             _loadFileDeduPlan.SaveScript();

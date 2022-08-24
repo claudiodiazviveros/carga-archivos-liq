@@ -2,6 +2,7 @@
 {
     public interface ILoadFileMedicamentos
     {
-        bool LoadData();
+        //bool LoadData();
+        void SaveScript();
     }
 }

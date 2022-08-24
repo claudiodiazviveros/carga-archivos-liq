@@ -2,6 +2,7 @@
 {
     public interface ILoadFileClasificacionBiomedica
     {
-        bool LoadData();
+        //bool LoadData();
+        void SaveScript();
     }
 }

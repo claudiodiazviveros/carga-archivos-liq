@@ -16,5 +16,7 @@
         int GetPoolInformado(int currentRow, string[] campos);
         int GetNombrePlanInformado(int currentRow, string[] campos);
         int GetRemesa(int currentRow, string[] campos);
+        int GetIsapre(int currentRow, string[] campos);
+
     }
 }
