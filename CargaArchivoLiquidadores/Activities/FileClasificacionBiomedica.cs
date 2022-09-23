@@ -1,54 +1,41 @@
 ﻿using CargaArchivoLiquidadores.Interfaces;
 using Dapper;
 using Microsoft.Extensions.Configuration;
-using Serilog;
 using System;
-using System.Data;
 using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace CargaArchivoLiquidadores.Activities
 {
-    public class LoadFileClasificacionBiomedica: ILoadFileClasificacionBiomedica
+    public class FileClasificacionBiomedica : IFileClasificacionBiomedica
     {
         private readonly IConfiguration _configuration;
+        private readonly string folderIn = $@"{Environment.CurrentDirectory}\Input";
+        private readonly string folderOut = $@"{Environment.CurrentDirectory}\Output";
 
-        public LoadFileClasificacionBiomedica(IConfiguration configuration)
+        public FileClasificacionBiomedica(IConfiguration configuration)
         {
             _configuration = configuration;
         }
 
-        public void SaveScript()
+        public async Task CreateScript()
         {
-            int currentRow = 2;
-            string folderIn = $@"{Environment.CurrentDirectory}\INBOX";
-            string folderOut = $@"{Environment.CurrentDirectory}\OUTPUT";
-
             DirectoryInfo di = new DirectoryInfo(folderIn);
             foreach (var fi in di.GetFiles("CLASIF_BIOMEDICA*.txt"))
             {
-                Log.Information("Inicio Script: CLASIF_BIOMEDICA");
+                // Lee todas las lineas del archivo plano.
+                string[] lines = await File.ReadAllLinesAsync(fi.FullName);
 
-                using (var file = new StreamReader(fi.FullName))
-                using (StreamWriter sw = new StreamWriter($@"{folderOut}\CLASIFICACION_BIOMEDICA.sql"))
-                {
-                    string row = file.ReadLine();   // Excluye primera Linea Resumen
+                // Importa lineas en clase.
+                var clasifBiomedicas = ClasifBiomedica.Import(lines);
 
-                    while ((row = file.ReadLine()) != null)
-                    {
-                        string[] arrayFields = row.Split('|');
-                        string line = QueryRow(currentRow, arrayFields);
-                        var result = line != "" ? true : false;
+                // Crea instrucciones sql.
+                var result = ClasifBiomedica.StatementSql(clasifBiomedicas);
 
-                        if (result)
-                            sw.WriteLine(line);
-
-                        currentRow++;
-                    }
-                }
-
-                Log.Information("Termino Script: CLASIF_BIOMEDICA");
+                // Guarda instrucciones sql en archivo script.
+                await File.WriteAllTextAsync($@"{folderOut}\CLASIFICACION_BIOMEDICA.sql", result);
             }
         }
 

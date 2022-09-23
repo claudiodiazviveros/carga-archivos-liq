@@ -6,16 +6,38 @@ using System.Data.SqlClient;
 using System.IO;
 using Dapper;
 using Serilog;
+using System.Threading.Tasks;
 
 namespace CargaArchivoLiquidadores.Activities
 {
-    public class LoadFileDeduCobDet : ILoadFileDeduCobDet
+    public class FileDeduCobDet : IFileDeduCobDet
     {
         private readonly IConfiguration _configuration;
+        private readonly string folderIn = $@"{Environment.CurrentDirectory}\Input";
+        private readonly string folderOut = $@"{Environment.CurrentDirectory}\Output";
 
-        public LoadFileDeduCobDet(IConfiguration configuration)
+        public FileDeduCobDet(IConfiguration configuration)
         {
             _configuration = configuration;
+        }
+
+        public async Task CreateScript()
+        {
+            DirectoryInfo di = new DirectoryInfo(folderIn);
+            foreach (var fi in di.GetFiles("DEDU_COB_DET*.txt"))
+            {
+                // Lee todas las lineas del archivo plano.
+                string[] lines = await File.ReadAllLinesAsync(fi.FullName);
+
+                // Importa lineas en clase.
+                var deduCobDets = DeduCobDet.Import(lines);
+
+                // Crea instrucciones sql.
+                var result = DeduCobDet.StatementSql(deduCobDets);
+
+                // Guarda instrucciones sql en archivo script.
+                await File.WriteAllTextAsync($@"{folderOut}\DEDU_COB_DET.sql", result);
+            }
         }
 
         public bool LoadData()

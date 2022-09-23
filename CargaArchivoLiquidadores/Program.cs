@@ -74,15 +74,17 @@ namespace CargaArchivoLiquidadores
 
             serviceCollection.AddSingleton<IConfiguration>(configuration);
             serviceCollection.AddScoped<App>()
-                .AddScoped<ILoadFileClasificacionBiomedica, LoadFileClasificacionBiomedica>()
-                .AddScoped<ILoadFileMedicamentos, LoadFileMedicamentos>()
+                .AddScoped<IFileClasificacionBiomedica, FileClasificacionBiomedica>()
+                .AddScoped<IFileMedicamentos, FileMedicamentos>()
+                .AddScoped<IFileCarta, FileCarta>()
                 .AddScoped<ILoadMaestroSolicitud, LoadMaestroSolicitud>()
                 .AddScoped<ILoadMaestroDetalleSolicitud, LoadMaestroDetalleSolicitud>()
                 .AddScoped<ILoadFileDetalleSolicitud, LoadFileDetalleSolicitud>()
                 .AddScoped<ILoadFileSolicitud, LoadFileSolicitud>()
-                .AddScoped<ILoadFileDeduPlan, LoadFileDeduPlan>()
-                .AddScoped<ILoadFileDeduCobDet, LoadFileDeduCobDet>()
-                .AddScoped<ILoadFileDeduFamiliar, LoadFileDeduFamiliar>();
+                .AddScoped<IFileDeduPlan, FileDeduPlan>()
+                .AddScoped<IFileDeduCobertura, FileDeduCobertura>()                
+                .AddScoped<IFileDeduCobDet, FileDeduCobDet>()
+                .AddScoped<IFileDeduFamiliar, FileDeduFamiliar>();
         }
     }
 }

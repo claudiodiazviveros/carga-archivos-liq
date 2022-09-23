@@ -1,21 +1,43 @@
 ﻿using CargaArchivoLiquidadores.Interfaces;
+using Dapper;
 using Microsoft.Extensions.Configuration;
+using Serilog;
 using System;
 using System.Data;
 using System.Data.SqlClient;
 using System.IO;
-using Dapper;
-using Serilog;
+using System.Threading.Tasks;
 
 namespace CargaArchivoLiquidadores.Activities
 {
-    public class LoadFileDeduPlan : ILoadFileDeduPlan
+    public class FileDeduPlan : IFileDeduPlan
     {
         private readonly IConfiguration _configuration;
+        private readonly string folderIn = $@"{Environment.CurrentDirectory}\Input";
+        private readonly string folderOut = $@"{Environment.CurrentDirectory}\Output";
 
-        public LoadFileDeduPlan(IConfiguration configuration)
+        public FileDeduPlan(IConfiguration configuration)
         {
             _configuration = configuration;
+        }
+
+        public async Task CreateScript()
+        {
+            DirectoryInfo di = new DirectoryInfo(folderIn);
+            foreach (var fi in di.GetFiles("DEDU_PLAN*.txt"))
+            {
+                // Lee todas las lineas del archivo plano.
+                string[] lines = await File.ReadAllLinesAsync(fi.FullName);
+
+                // Importa lineas en clase.
+                var deduPlans = DeduPlan.Import(lines);
+
+                // Crea instrucciones sql.
+                var result = DeduPlan.StatementSql(deduPlans);
+
+                // Guarda instrucciones sql en archivo script.
+                await File.WriteAllTextAsync($@"{folderOut}\DEDU_PLAN.sql", result);
+            }
         }
 
         public bool LoadData()
@@ -32,7 +54,7 @@ namespace CargaArchivoLiquidadores.Activities
                 Log.Information("Inicio Carga de archivo: DEDU_PLAN");
 
                 using (var file = new StreamReader(fi.FullName))
-                {                  
+                {
                     string row = file.ReadLine();   // Excluye primera Linea Resumen
 
                     while ((row = file.ReadLine()) != null)

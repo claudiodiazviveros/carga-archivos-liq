@@ -1,24 +1,46 @@
 ﻿using CargaArchivoLiquidadores.Interfaces;
+using Dapper;
 using Microsoft.Extensions.Configuration;
+using Serilog;
 using System;
 using System.Data;
 using System.Data.SqlClient;
 using System.IO;
-using Dapper;
-using Serilog;
+using System.Threading.Tasks;
 
 namespace CargaArchivoLiquidadores.Activities
 {
-    public class LoadFileDeduFamiliar : ILoadFileDeduFamiliar
+    public class FileDeduFamiliar : IFileDeduFamiliar
     {
         private readonly IConfiguration _configuration;
+        private readonly string folderIn = $@"{Environment.CurrentDirectory}\Input";
+        private readonly string folderOut = $@"{Environment.CurrentDirectory}\Output";
 
-        public LoadFileDeduFamiliar(IConfiguration configuration)
+        public FileDeduFamiliar(IConfiguration configuration)
         {
             _configuration = configuration;
         }
 
-        public bool LoadData()
+        public async Task CreateScript()
+        {
+            DirectoryInfo di = new DirectoryInfo(folderIn);
+            foreach (var fi in di.GetFiles("DEDU_FAMILIAR*.txt"))
+            {
+                // Lee todas las lineas del archivo plano.
+                string[] lines = await File.ReadAllLinesAsync(fi.FullName);
+
+                // Importa lineas en clase.
+                var deduFamiliars = DeduFamiliar.Import(lines);
+
+                // Crea instrucciones sql.
+                var result = DeduFamiliar.StatementSql(deduFamiliars);
+
+                // Guarda instrucciones sql en archivo script.
+                await File.WriteAllTextAsync($@"{folderOut}\DEDU_FAMILIAR.sql", result);
+            }
+        }
+
+        private bool LoadData()
         {
             int succeedCount = 0;
             int failedCount = 0;
@@ -32,7 +54,7 @@ namespace CargaArchivoLiquidadores.Activities
                 Log.Information("Inicio Carga de archivo: DEDU_FAMILIAR");
 
                 using (var file = new StreamReader(fi.FullName))
-                {                  
+                {
                     string row = file.ReadLine();   // Excluye primera Linea Resumen
 
                     while ((row = file.ReadLine()) != null)
