@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Text;
 
 namespace CargaArchivoLiquidadores
@@ -27,15 +28,20 @@ namespace CargaArchivoLiquidadores
 
             foreach (var item in medicamentos)
             {
-                int ID_CLASIFICACION_FK = 0;
+                int CLBI_ID_CLASIFICACION_FK = Get_ID_CLASIFICACION(item.CodigoClasificacionBiomedica);
 
                 string sql = "INSERT INTO [dbo].[MEDICAMENTO]([CLBI_ID_CLASIFICACION],[MDTO_COD_MEDICAMENTO],[MDTO_DES_MEDICAMENTO],[MDTO_USU_ULT_ACT],[MDTO_USU_CREACION],[MDTO_FEC_ULT_ACT],[MDTO_FEC_CREACION] ,[MDTO_ES_VIGENTE],[MDTO_ORIGEN_DATO]) " +
-                    $"VALUES ({ID_CLASIFICACION_FK}, {item.CodigoMedicamento}, '{item.DescripcionMedicamento}', 'BATCH', 'BATCH', NULL, '{item.FechaExtraccion}', 1, 'P')";
+                    $"VALUES ({CLBI_ID_CLASIFICACION_FK}, {item.CodigoMedicamento}, '{item.DescripcionMedicamento}', 'BATCH', 'BATCH', NULL, '{item.FechaExtraccion}', 1, 'P')";
 
                 sb.AppendLine(sql);
             }
 
             return sb.ToString();
+        }
+
+        private static int Get_ID_CLASIFICACION(string codigoClasificacionBiomedica)
+        {
+            throw new NotImplementedException();
         }
     }
 }

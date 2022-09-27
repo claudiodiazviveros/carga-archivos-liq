@@ -10,7 +10,7 @@ using CargaArchivoLiquidadores.Activities;
 
 namespace CargaArchivoLiquidadores
 {
-    class Program
+    public class Program
     {
         public static IConfiguration configuration;
 
@@ -77,6 +77,7 @@ namespace CargaArchivoLiquidadores
                 .AddScoped<IFileClasificacionBiomedica, FileClasificacionBiomedica>()
                 .AddScoped<IFileMedicamentos, FileMedicamentos>()
                 .AddScoped<IFileCarta, FileCarta>()
+                .AddScoped<IFileLiquidacion, FileLiquidacion>()
                 .AddScoped<ILoadMaestroSolicitud, LoadMaestroSolicitud>()
                 .AddScoped<ILoadMaestroDetalleSolicitud, LoadMaestroDetalleSolicitud>()
                 .AddScoped<ILoadFileDetalleSolicitud, LoadFileDetalleSolicitud>()
