@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using Serilog;
+using System;
+using System.Linq;
 using System.Text;
 
 namespace CargaArchivoLiquidadores
@@ -27,14 +29,26 @@ namespace CargaArchivoLiquidadores
         public static string StatementSql(DeduCobDet[] deduCobDets)
         {
             StringBuilder sb = new StringBuilder();
+            
+            int newRows = 0;
 
             foreach (var item in deduCobDets)
             {
-                string sql = "INSERT INTO [dbo].[DEDUCIBLE_COBERTURA_DET] ([DCD_PROVEEDOR], [DCD_POLIZA], [DCD_CODIGO_PLAN], [DCD_COD_COBERTURA], [DCD_COD_GRUPO], [DCD_NOMBRE_GRUPO], [DCD_TIPO_COB], [DCD_FEC_MODIFICACION], [DCD_FEC_CREACION]) " +
-                    $"VALUES ('{item.Proveedor}', {item.Poliza}, '{item.CodigoPlan}', {item.CodigoCobertura}, {item.CodigoGrupo}, '{item.NombreGrupo}', 'NO_FARMACIA', NULL, '{item.FechaExtraccion}')";
+                try
+                {
+                    string sql = "INSERT INTO [dbo].[DEDUCIBLE_COBERTURA_DET] ([DCD_PROVEEDOR], [DCD_POLIZA], [DCD_CODIGO_PLAN], [DCD_COD_COBERTURA], [DCD_COD_GRUPO], [DCD_NOMBRE_GRUPO], [DCD_TIPO_COB], [DCD_FEC_MODIFICACION], [DCD_FEC_CREACION]) " +
+                        $"VALUES ('{item.Proveedor}', {item.Poliza}, '{item.CodigoPlan}', {item.CodigoCobertura}, {item.CodigoGrupo}, '{item.NombreGrupo}', 'NO_FARMACIA', NULL, '{item.FechaExtraccion}')";
+                    sb.AppendLine(sql);
 
-                sb.AppendLine(sql);
+                    newRows++;
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex.Message);
+                }
             }
+
+            Log.Information($"Registros nuevos: {newRows}");
 
             return sb.ToString();
         }

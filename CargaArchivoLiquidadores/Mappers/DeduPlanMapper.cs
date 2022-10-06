@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using Serilog;
+using System;
+using System.Linq;
 using System.Text;
 
 namespace CargaArchivoLiquidadores
@@ -36,17 +38,29 @@ namespace CargaArchivoLiquidadores
         {
             StringBuilder sb = new StringBuilder();
 
+            int newRows = 0;
+
             foreach (var item in deduPlans)
             {
-                string maximoDeducible = string.IsNullOrEmpty(item.MaximoDeducible) ? "0" : item.MaximoDeducible.Replace(",", ".");
-                string maximoGrupo = string.IsNullOrEmpty(item.MaximoGrupo) ? "0" : item.MaximoGrupo.Replace(",", ".");
-                string topeGeneralPlan = string.IsNullOrEmpty(item.TopeGeneralPlan) ? "0" : item.TopeGeneralPlan.Replace(",", ".");
+                try
+                {
+                    string maximoDeducible = string.IsNullOrEmpty(item.MaximoDeducible) ? "0" : item.MaximoDeducible.Replace(",", ".");
+                    string maximoGrupo = string.IsNullOrEmpty(item.MaximoGrupo) ? "0" : item.MaximoGrupo.Replace(",", ".");
+                    string topeGeneralPlan = string.IsNullOrEmpty(item.TopeGeneralPlan) ? "0" : item.TopeGeneralPlan.Replace(",", ".");
 
-                string sql = $"INSERT INTO [dbo].[DEDUCIBLE_PLAN] ([DP_PROVEEDOR], [DP_POLIZA], [DP_CONTRATANTE], [DP_CODIGO_PLAN], [DP_TIPO_DEDUCIBLE], [DP_MAX_DEDUCIBLE], [DP_PLAZO], [DP_MAX_PERSONA], [DP_MAX_GRUPO], [DP_TOPE_GENERAL_PLAN], [DP_FEC_MODIFICACION], [DP_FEC_CREACION], [DP_FEC_INICIO_VIG], [DP_FEC_TERMINO_VIG], [DP_PLAN_PERSONAL], [DP_CODIGO_GRUPO]) " +
-                    $"VALUES ('{item.Proveedor}', {item.Poliza}, '{item.Contratante}', '{item.CodigoPlan}', '{item.TipoDeducible}', {maximoDeducible}, {item.Plazo}, {item.MaximoPersona}, {maximoGrupo}, {topeGeneralPlan}, NULL, '{item.FechaExtraccion}', '{item.FechaInicioVigencia}', '{item.FechaTerminoVigencia}', '{item.PlanPersonal}', '{item.CodigoGrupo}')";
+                    string sql = $"INSERT INTO [dbo].[DEDUCIBLE_PLAN] ([DP_PROVEEDOR], [DP_POLIZA], [DP_CONTRATANTE], [DP_CODIGO_PLAN], [DP_TIPO_DEDUCIBLE], [DP_MAX_DEDUCIBLE], [DP_PLAZO], [DP_MAX_PERSONA], [DP_MAX_GRUPO], [DP_TOPE_GENERAL_PLAN], [DP_FEC_MODIFICACION], [DP_FEC_CREACION], [DP_FEC_INICIO_VIG], [DP_FEC_TERMINO_VIG], [DP_PLAN_PERSONAL], [DP_CODIGO_GRUPO]) " +
+                        $"VALUES ('{item.Proveedor}', {item.Poliza}, '{item.Contratante}', '{item.CodigoPlan}', '{item.TipoDeducible}', {maximoDeducible}, {item.Plazo}, {item.MaximoPersona}, {maximoGrupo}, {topeGeneralPlan}, NULL, '{item.FechaExtraccion}', '{item.FechaInicioVigencia}', '{item.FechaTerminoVigencia}', '{item.PlanPersonal}', '{item.CodigoGrupo}')";
+                    sb.AppendLine(sql);
 
-                sb.AppendLine(sql);
+                    newRows++;
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex.Message);
+                }
             }
+
+            Log.Information($"Registros nuevos: {newRows}");
 
             return sb.ToString();
         }

@@ -1,5 +1,6 @@
 ﻿using CargaArchivoLiquidadores.Activities;
 using CargaArchivoLiquidadores.Interfaces;
+using Serilog;
 using System.Threading.Tasks;
 
 namespace CargaArchivoLiquidadores
@@ -34,35 +35,31 @@ namespace CargaArchivoLiquidadores
             _fileDeduFamiliar = fileDeduFamiliar;
         }
 
-        public Task Run()
+        public async Task Run()
         {
-            //Log.Information("Inicia servicio");
-
             //1. create script 'Clasificacion Biomedica'
-            _fileClasificacionBiomedica.CreateScript();
+            await _fileClasificacionBiomedica.CreateScript();
 
             //2. load file 'Medicamentos'
-            _fileMedicamentos.CreateScript();
+            await _fileMedicamentos.CreateScript();
 
             //2. load file 'Liquidacion'
-            _fileLiquidacion.CreateScript();
+            await _fileLiquidacion.CreateScript();
 
             //?. create script 'Carta Rechazo'
-            _fileCarta.CreateScript();
+            await _fileCarta.CreateScript();
 
             //?. create script 'Deducible Plan'
-            _fileDeduPlan.CreateScript();
+            await _fileDeduPlan.CreateScript();
 
             //?. create script 'Deducible Cobertura Detalle'
-            _fileDeduCobDet.CreateScript();
+            await _fileDeduCobDet.CreateScript();
 
             //?. create script 'Deducible Familiar'
-            _fileDeduFamiliar.CreateScript();
+            await _fileDeduFamiliar.CreateScript();
 
             //?. create script 'Deducible Cobertura'
-            _fileDeduCobertura.CreateScript();
-
-            return Task.CompletedTask;
+            await _fileDeduCobertura.CreateScript();
         }
     }
 }

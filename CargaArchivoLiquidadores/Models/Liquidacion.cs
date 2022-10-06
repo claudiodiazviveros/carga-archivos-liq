@@ -46,18 +46,18 @@
         public string GrupoPrestacion { get; set; }
         public string DescripcionGrupoPrestacion { get; set; }
         public string CantidadPrestacion { get; set; }
-        public string MontoPrestacion { get; set; }
-        public string MontoPrestacionUf { get; set; }
-        public string MontoIsapre { get; set; }
-        public string MontoIsapreUf { get; set; }
-        public string MontoSolicitado { get; set; }
-        public string MontoSolicitadoUf { get; set; }
-        public string MontoDeducible { get; set; }
-        public string MontoDeducibleUf { get; set; }
-        public string MontoPago { get; set; }
-        public string MontoPagoUf { get; set; }
-        public string MontoRechazo { get; set; }
-        public string MontoRechazoUf { get; set; }
+        public decimal MontoPrestacion { get; set; }
+        public decimal MontoPrestacionUf { get; set; }
+        public decimal MontoIsapre { get; set; }
+        public decimal MontoIsapreUf { get; set; }
+        public decimal MontoSolicitado { get; set; }
+        public decimal MontoSolicitadoUf { get; set; }
+        public decimal MontoDeducible { get; set; }
+        public decimal MontoDeducibleUf { get; set; }
+        public decimal MontoPago { get; set; }
+        public decimal MontoPagoUf { get; set; }
+        public decimal MontoRechazo { get; set; }
+        public decimal MontoRechazoUf { get; set; }
         public string Estado { get; set; }
         public string FechaEstado { get; set; }
         public string CorrSoliInterno { get; set; }
@@ -65,7 +65,7 @@
         public string FechaRemesa { get; set; }
         public string CodigoPrestacion { get; set; }
         public string DescripcionPrestacion { get; set; }
-        public string PorcentajeReembolso { get; set; }
+        public decimal PorcentajeReembolso { get; set; }
         public string CantidadPrestaciones { get; set; }
         public string FormaPagoLiquidacion { get; set; }
         public string CodigoBanco { get; set; }
@@ -93,11 +93,11 @@
         public string CodigoMedicamento { get; set; }
         public string CodigoClasificacionBiometrica { get; set; }
         public string MontoTopeArancel { get; set; }
-        public string MontoSaldoDisponible { get; set; }
+        public decimal MontoSaldoDisponible { get; set; }
         public string FechaExtraccion { get; set; }
         public string EstadoRemesa { get; set; }
         public string TipoDeducible { get; set; }
-        public string TopeDeducible { get; set; }
+        public decimal TopeDeducible { get; set; }
         public string NombrePlan { get; set; }
         public string FechaCreacionRemesa { get; set; }
         public string UsuarioCreacionRemesa { get; set; }

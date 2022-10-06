@@ -26,8 +26,11 @@ namespace CargaArchivoLiquidadores.Activities
             DirectoryInfo di = new DirectoryInfo(folderIn);
             foreach (var fi in di.GetFiles("MEDICAMENTOS*.txt"))
             {
+                Log.Information("Inicia Medicamentos");
+
                 // Lee todas las lineas del archivo plano.
                 string[] lines = await File.ReadAllLinesAsync(fi.FullName);
+                Log.Information($"Registros en archivo: {lines.Count()}");
 
                 // Importa lineas en clase.
                 var medicamentos = Medicamento.Import(lines);
@@ -37,6 +40,8 @@ namespace CargaArchivoLiquidadores.Activities
 
                 // Guarda instrucciones sql en archivo script.
                 await File.WriteAllTextAsync($@"{folderOut}\MEDICAMENTOS.sql", result);
+
+                Log.Information("Termino Medicamentos");
             }
         }
 

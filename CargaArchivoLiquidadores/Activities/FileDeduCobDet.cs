@@ -7,6 +7,7 @@ using System.IO;
 using Dapper;
 using Serilog;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace CargaArchivoLiquidadores.Activities
 {
@@ -26,8 +27,11 @@ namespace CargaArchivoLiquidadores.Activities
             DirectoryInfo di = new DirectoryInfo(folderIn);
             foreach (var fi in di.GetFiles("DEDU_COB_DET*.txt"))
             {
+                Log.Information("Inicia Deducible coberturas");
+
                 // Lee todas las lineas del archivo plano.
                 string[] lines = await File.ReadAllLinesAsync(fi.FullName);
+                Log.Information($"Registros en archivo: {lines.Count()}");
 
                 // Importa lineas en clase.
                 var deduCobDets = DeduCobDet.Import(lines);
@@ -37,6 +41,8 @@ namespace CargaArchivoLiquidadores.Activities
 
                 // Guarda instrucciones sql en archivo script.
                 await File.WriteAllTextAsync($@"{folderOut}\DEDU_COB_DET.sql", result);
+
+                Log.Information("Termino Deducible coberturas");
             }
         }
 

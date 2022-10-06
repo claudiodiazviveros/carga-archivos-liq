@@ -1,7 +1,9 @@
 ﻿using CargaArchivoLiquidadores.Interfaces;
 using Microsoft.Extensions.Configuration;
+using Serilog;
 using System;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace CargaArchivoLiquidadores.Activities
@@ -22,8 +24,11 @@ namespace CargaArchivoLiquidadores.Activities
             DirectoryInfo di = new DirectoryInfo(folderIn);
             foreach (var fi in di.GetFiles("DEDU_COBERTURA*.txt"))
             {
+                Log.Information("Inicia Deducibles coberturas");
+
                 // Lee todas las lineas del archivo plano.
                 string[] lines = await File.ReadAllLinesAsync(fi.FullName);
+                Log.Information($"Registros en archivo: {lines.Count()}");
 
                 // Importa lineas en clase.
                 var deduCoberturas = DeduCobertura.Import(lines);
@@ -33,6 +38,8 @@ namespace CargaArchivoLiquidadores.Activities
 
                 // Guarda instrucciones sql en archivo script.
                 await File.WriteAllTextAsync($@"{folderOut}\DEDU_COBERTURA.sql", result);
+
+                Log.Information("Termino Deducibles coberturas");
             }
         }
     }

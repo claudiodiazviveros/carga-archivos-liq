@@ -6,6 +6,7 @@ using System;
 using System.Data;
 using System.Data.SqlClient;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace CargaArchivoLiquidadores.Activities
@@ -26,8 +27,11 @@ namespace CargaArchivoLiquidadores.Activities
             DirectoryInfo di = new DirectoryInfo(folderIn);
             foreach (var fi in di.GetFiles("DEDU_PLAN*.txt"))
             {
+                Log.Information("Inicia Deducible planes");
+
                 // Lee todas las lineas del archivo plano.
                 string[] lines = await File.ReadAllLinesAsync(fi.FullName);
+                Log.Information($"Registros en archivo: {lines.Count()}");
 
                 // Importa lineas en clase.
                 var deduPlans = DeduPlan.Import(lines);
@@ -37,6 +41,8 @@ namespace CargaArchivoLiquidadores.Activities
 
                 // Guarda instrucciones sql en archivo script.
                 await File.WriteAllTextAsync($@"{folderOut}\DEDU_PLAN.sql", result);
+
+                Log.Information("Termino Deducible planes");
             }
         }
 

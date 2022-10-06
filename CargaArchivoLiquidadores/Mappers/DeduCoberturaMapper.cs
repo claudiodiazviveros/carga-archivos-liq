@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using Serilog;
+using System;
+using System.Linq;
 using System.Text;
 
 namespace CargaArchivoLiquidadores
@@ -30,16 +32,28 @@ namespace CargaArchivoLiquidadores
         {
             StringBuilder sb = new StringBuilder();
 
+            int newRows = 0;
+
             foreach (var item in deduCoberturas)
             {
-                string maximoDeducible = string.IsNullOrEmpty(item.MaximoDeducible) ? "0" : item.MaximoDeducible.Replace(",", ".");
-                string maximoPersona = string.IsNullOrEmpty(item.MaximoPersona) ? "0" : item.MaximoPersona.Replace(",", ".");
+                try
+                {
+                    string maximoDeducible = string.IsNullOrEmpty(item.MaximoDeducible) ? "0" : item.MaximoDeducible.Replace(",", ".");
+                    string maximoPersona = string.IsNullOrEmpty(item.MaximoPersona) ? "0" : item.MaximoPersona.Replace(",", ".");
 
-                string sql = "INSERT INTO [dbo].[DEDUCIBLE_COBERTURA] ([DC_PROVEEDOR], [DC_POLIZA], [DC_CODIGO_PLAN], [DC_TIPO_DEDUCIBLE], [DC_PLAZO], [DC_COD_COBERTURA], [DC_MAX_DEDUCIBLE], [DC_MAX_PERSONA], [DC_FEC_MODIFICACION], [DC_FEC_CREACION]) " +
-                    $"VALUES ('{item.Proveedor}', {item.Poliza}, '{item.CodigoPlan}', '{item.TipoDeducible}', {item.Plazo}, {item.CodigoCobertura}, {maximoDeducible}, {maximoPersona}, NULL, {item.FechaExtraccion})";
+                    string sql = "INSERT INTO [dbo].[DEDUCIBLE_COBERTURA] ([DC_PROVEEDOR], [DC_POLIZA], [DC_CODIGO_PLAN], [DC_TIPO_DEDUCIBLE], [DC_PLAZO], [DC_COD_COBERTURA], [DC_MAX_DEDUCIBLE], [DC_MAX_PERSONA], [DC_FEC_MODIFICACION], [DC_FEC_CREACION]) " +
+                        $"VALUES ('{item.Proveedor}', {item.Poliza}, '{item.CodigoPlan}', '{item.TipoDeducible}', {item.Plazo}, {item.CodigoCobertura}, {maximoDeducible}, {maximoPersona}, NULL, {item.FechaExtraccion})";
+                    sb.AppendLine(sql);
 
-                sb.AppendLine(sql);
+                    newRows++;
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex.Message);
+                }
             }
+
+            Log.Information($"Registros nuevos: {newRows}");
 
             return sb.ToString();
         }

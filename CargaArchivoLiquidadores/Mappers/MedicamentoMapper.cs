@@ -1,4 +1,8 @@
-﻿using System;
+﻿using Dapper;
+using Microsoft.Extensions.Configuration;
+using Serilog;
+using System;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 
@@ -26,22 +30,58 @@ namespace CargaArchivoLiquidadores
         {
             StringBuilder sb = new StringBuilder();
 
+            int newRows = 0;
+
             foreach (var item in medicamentos)
             {
-                int CLBI_ID_CLASIFICACION_FK = Get_ID_CLASIFICACION(item.CodigoClasificacionBiomedica);
+                try
+                {
+                    if (IsExist(item.CodigoMedicamento))
+                    {
+                        continue;
+                    }
 
-                string sql = "INSERT INTO [dbo].[MEDICAMENTO]([CLBI_ID_CLASIFICACION],[MDTO_COD_MEDICAMENTO],[MDTO_DES_MEDICAMENTO],[MDTO_USU_ULT_ACT],[MDTO_USU_CREACION],[MDTO_FEC_ULT_ACT],[MDTO_FEC_CREACION] ,[MDTO_ES_VIGENTE],[MDTO_ORIGEN_DATO]) " +
-                    $"VALUES ({CLBI_ID_CLASIFICACION_FK}, {item.CodigoMedicamento}, '{item.DescripcionMedicamento}', 'BATCH', 'BATCH', NULL, '{item.FechaExtraccion}', 1, 'P')";
+                    int CLBI_ID_CLASIFICACION_FK = Get_ID_CLASIFICACION(item.CodigoClasificacionBiomedica);
 
-                sb.AppendLine(sql);
+                    string sql = "INSERT INTO [dbo].[MEDICAMENTO]([CLBI_ID_CLASIFICACION],[MDTO_COD_MEDICAMENTO],[MDTO_DES_MEDICAMENTO],[MDTO_USU_ULT_ACT],[MDTO_USU_CREACION],[MDTO_FEC_ULT_ACT],[MDTO_FEC_CREACION] ,[MDTO_ES_VIGENTE],[MDTO_ORIGEN_DATO]) " +
+                        $"VALUES ({CLBI_ID_CLASIFICACION_FK}, {item.CodigoMedicamento}, '{item.DescripcionMedicamento}', 'BATCH', 'BATCH', NULL, '{item.FechaExtraccion}', 1, 'P')";
+                    sb.AppendLine(sql);
+
+                    newRows++;
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex.Message);
+                }
             }
+
+            Log.Information($"Registros nuevos: {newRows}");
 
             return sb.ToString();
         }
 
+        private static bool IsExist(string codigoMedicamento)
+        {
+            using (var connection = new SqlConnection(Program.configuration.GetConnectionString("DataConnection")))
+            {
+                string sql = $"SELECT 1 FROM MEDICAMENTO WHERE MDTO_COD_MEDICAMENTO = '{codigoMedicamento}'";
+                return connection.QuerySingleOrDefault<bool>(sql);
+            }
+        }
+
         private static int Get_ID_CLASIFICACION(string codigoClasificacionBiomedica)
         {
-            throw new NotImplementedException();
+            int ret = 0;
+
+            using (var connection = new SqlConnection(Program.configuration.GetConnectionString("DataConnection")))
+            {
+                string sql = $"SELECT TOP 1 CLBI_ID_CLASIFICACION FROM CLASIFICACION_BIOMEDICA WHERE CLBI_COD_CLASIFICACION = '{codigoClasificacionBiomedica}'";
+                ret = connection.QueryFirstOrDefault<int>(sql);
+            }
+
+            if (ret == 0) throw new Exception($"CLASIFICACION_BIOMEDICA {codigoClasificacionBiomedica} no existente!");
+
+            return ret;
         }
     }
 }

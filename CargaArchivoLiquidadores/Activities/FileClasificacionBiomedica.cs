@@ -1,6 +1,7 @@
 ﻿using CargaArchivoLiquidadores.Interfaces;
 using Dapper;
 using Microsoft.Extensions.Configuration;
+using Serilog;
 using System;
 using System.Data.SqlClient;
 using System.IO;
@@ -25,8 +26,11 @@ namespace CargaArchivoLiquidadores.Activities
             DirectoryInfo di = new DirectoryInfo(folderIn);
             foreach (var fi in di.GetFiles("CLASIF_BIOMEDICA*.txt"))
             {
+                Log.Information("Inicia Clasificaciones Biomedica");
+
                 // Lee todas las lineas del archivo plano.
                 string[] lines = await File.ReadAllLinesAsync(fi.FullName);
+                Log.Information($"Registros en archivo: {lines.Count()}");
 
                 // Importa lineas en clase.
                 var clasifBiomedicas = ClasifBiomedica.Import(lines);
@@ -36,6 +40,8 @@ namespace CargaArchivoLiquidadores.Activities
 
                 // Guarda instrucciones sql en archivo script.
                 await File.WriteAllTextAsync($@"{folderOut}\CLASIFICACION_BIOMEDICA.sql", result);
+
+                Log.Information("Termino Clasificaciones Biomedica");
             }
         }
 
